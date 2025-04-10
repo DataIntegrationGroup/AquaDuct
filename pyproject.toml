@@ -1,0 +1,18 @@
+[project]
+name = "aquaduct"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "google-cloud-secret-manager>=2.23.2",
+    "python-dotenv>=1.1.0",
+    "requests>=2.32.3",
+    "requests-oauthlib>=2.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pdbpp>=0.10.3",
+    "pytest>=8.3.5",
+]
