@@ -36,36 +36,3 @@ compute_logs:
 scheduler:
   module: dagster.core.scheduler
   class: DagsterDaemonScheduler
-
-run_storage:
-  module: dagster_postgres.run_storage
-  class: PostgresRunStorage
-  config:
-    postgres_db:
-      username: postgres_user
-      password: postgres_password
-      hostname: docker_example_postgresql
-      db_name: postgres_db
-      port: 5432
-
-event_log_storage:
-  module: dagster_postgres.event_log
-  class: PostgresEventLogStorage
-  config:
-    postgres_db:
-      username: postgres_user
-      password: postgres_password
-      hostname: docker_example_postgresql
-      db_name: postgres_db
-      port: 5432
-
-schedule_storage:
-  module: dagster_postgres.schedule_storage
-  class: PostgresScheduleStorage
-  config:
-    postgres_db:
-      username: postgres_user
-      password: postgres_password
-      hostname: docker_example_postgresql
-      db_name: postgres_db
-      port: 5432
