@@ -1,1 +1,1 @@
-gcloud compute ssh dagster --ssh-flag="-AT" --command "cd AquaDuct; git pull;"
+gcloud compute ssh deploy@dagster --ssh-flag="-AT" --command "cd ~/AquaDuct; git pull;"
