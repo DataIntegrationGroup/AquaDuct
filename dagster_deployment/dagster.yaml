@@ -1,0 +1,4 @@
+telemetry:
+  enabled: false
+
+# fill this in with sane defaults, keeping in mind my dockerfiles and docker compose. ai!
