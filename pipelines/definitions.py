@@ -1,5 +1,4 @@
-import dagster as dg
-from dagster import asset
+from dagster import asset, Definitions
  
 @asset
 def hello_world():
@@ -9,7 +8,7 @@ def hello_world():
 def another_asset():
     print("asdf asdf asdf")
 
-hydrovu_definitions = dg.Definitions(
+hydrovu_definitions = Definitions(
   assets=[hello_world, another_asset],
   resources={},
 )
