@@ -1,14 +1,10 @@
-from dagster import asset, Definitions
- 
-@asset
-def hello_world():
-    print("Hello, world!")
+import dagster as dg
+import hydrovu
 
-@asset
-def another_asset():
-    print("asdf asdf asdf")
+modules = [hydrovu]
+all_assets = dg.load_assets_from_modules([m.assets for m in modules])
 
-hydrovu_definitions = Definitions(
-  assets=[hello_world, another_asset],
+definitions = dg.Definitions(
+  assets=all_assets,
   resources={},
 )
