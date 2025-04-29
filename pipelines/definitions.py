@@ -1,9 +1,13 @@
 import dagster as dg
-from workflows.hydrovu import assets as hydrovu_assets
+from pipelines.definitions import hydrovu
 
 
-modules = [hydrovu]
-all_assets = dg.load_assets_from_modules([m.assets for m in modules]) #why does this have no module assets? it crashes. ai?
+# Option 1: Load the modules directly
+all_assets = dg.load_assets_from_modules([hydrovu.assets])
+
+# Option 2 (alternative): If you want to keep your list approach
+# modules = [hydrovu]
+# all_assets = dg.load_assets_from_modules([m.assets for m in modules])
 
 definitions = dg.Definitions(
   assets=all_assets,
