@@ -1,5 +1,5 @@
 import dagster as dg
-import workflows.hydrovu as hydrovu #this import crashing, fix it. Check out the dockerfiles too to see how this file is invoked by dagster. ai!
+import pipelines.definitions.hydrovu as hydrovu
 
 
 modules = [hydrovu]
