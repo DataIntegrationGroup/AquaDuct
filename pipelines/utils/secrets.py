@@ -1,6 +1,6 @@
 from google.cloud import secretmanager
 import json
-import utils.env as env
+import pipelines.utils.env as env
 
 DEFAULT_PROJECT_NUM = env.get("GCP_PROJECT_NUM")
 

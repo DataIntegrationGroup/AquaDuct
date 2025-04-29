@@ -6,4 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "dagster>=1.10.12",
+    "google-cloud-secret-manager>=2.23.3",
+    "oauthlib>=3.2.2",
+    "requests-oauthlib>=2.0.0",
 ]

@@ -25,8 +25,8 @@ services:
   # webserver.
   aquaduct_pipelines:
     build:
-      context: ../pipelines
-      dockerfile: ../pipelines/Dockerfile
+      context: ../
+      dockerfile: ./pipelines/Dockerfile
     container_name: aquaduct_pipelines
     image: aquaduct_pipelines_image
     # expose: 

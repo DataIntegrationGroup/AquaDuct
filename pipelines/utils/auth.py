@@ -1,6 +1,6 @@
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
-import utils.secrets
+import pipelines.utils.secrets as secrets
 
 ##TODO: instead make auth a decorator for requests?
 class AuthStrategy():
@@ -14,7 +14,7 @@ class OAuth2(AuthStrategy):
     self.token_url = token_url
 
   def __call__(self, request):
-    secret = utils.secrets.get(self.task_name)
+    secret = secrets.get(self.task_name)
     client_id, client_secret = secret['id'], secret['secret']
 
     client = BackendApplicationClient(client_id=secret['id'])
