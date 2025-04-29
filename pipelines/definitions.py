@@ -1,5 +1,5 @@
 import dagster as dg
-import pipelines.definitions.hydrovu as hydrovu
+from pipelines.definitions import hydrovu
 
 
 modules = [hydrovu]
