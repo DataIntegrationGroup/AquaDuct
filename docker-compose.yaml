@@ -2,15 +2,15 @@ services:
   # This service runs the postgres DB used by dagster for run storage, schedule storage,
   # and event log storage. Depending on the hardware you run this Compose on, you may be able
   # to reduce the interval and timeout in the healthcheck to speed up your `docker-compose up` times.
-  docker_example_postgresql:
+  dagster_dev_postgresql:
     image: postgres:11
-    container_name: docker_example_postgresql
+    container_name: dagster_dev_postgresql
     environment:
       POSTGRES_USER: 'postgres_user'
       POSTGRES_PASSWORD: 'postgres_password'
       POSTGRES_DB: 'postgres_db'
     networks:
-      - docker_example_network
+      - dagster_network
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres_user -d postgres_db']
       interval: 10s
@@ -39,12 +39,12 @@ services:
       DAGSTER_POSTGRES_DB: 'postgres_db'
       DAGSTER_CURRENT_IMAGE: 'aquaduct_pipelines_image'
     networks:
-      - docker_example_network
+      - dagster_network
 
   # This service runs dagster-webserver, which loads your user code from the user code container.
   # Since our instance uses the QueuedRunCoordinator, any runs submitted from the webserver will be put on
   # a queue and later dequeued and launched by dagster-daemon.
-  docker_example_webserver:
+  dagster_webserver:
     build:
       context: .
       dockerfile: ./Dockerfile_dagster
@@ -56,7 +56,7 @@ services:
       - '3000'
       - -w
       - workspace.yaml
-    container_name: docker_example_webserver
+    container_name: dagster_webserver
     expose:
       - '3000'
     ports:
@@ -69,23 +69,23 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
     networks:
-      - docker_example_network
+      - dagster_network
     depends_on:
-      docker_example_postgresql:
+      dagster_dev_postgresql:
         condition: service_healthy
       aquaduct_pipelines:
         condition: service_started
 
   # This service runs the dagster-daemon process, which is responsible for taking runs
   # off of the queue and launching them, as well as creating runs from schedules or sensors.
-  docker_example_daemon:
+  dagster_daemon:
     build:
       context: .
       dockerfile: ./Dockerfile_dagster
     entrypoint:
       - dagster-daemon
       - run
-    container_name: docker_example_daemon
+    container_name: dagster_daemon
     restart: on-failure
     environment:
       DAGSTER_POSTGRES_USER: 'postgres_user'
@@ -95,14 +95,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
     networks:
-      - docker_example_network
+      - dagster_network
     depends_on:
-      docker_example_postgresql:
+      dagster_dev_postgresql:
         condition: service_healthy
       aquaduct_pipelines:
         condition: service_started
 
 networks:
-  docker_example_network:
+  dagster_network:
     driver: bridge
-    name: docker_example_network
+    name: dagster_network
