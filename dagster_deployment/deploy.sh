@@ -8,7 +8,7 @@ gcloud compute ssh deploy@dagster \
   --command '
     [ -d AquaDuct ] &&
     (cd AquaDuct && git pull) &&
-    (cd AquaDuct/dagster_deployment && sudo docker compose up -d --build)
+    (cd AquaDuct && sudo docker compose down --remove-orphans && sudo docker compose up --build --force-recreate -d)
   '
 
 echo "Done deploying!"
