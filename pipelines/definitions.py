@@ -1,8 +1,4 @@
 from dagster import Definitions
-from dagster import load_assets_from_modules
-from pipelines.workflows import hydrovu
+import pipelines.workflows.hydrovu.definitions as hydrovu_definitions
 
-modules = [hydrovu]
-all_assets = load_assets_from_modules(modules)
-
-defs = Definitions(assets=all_assets)
+defs = Definitions.merge(hydrovu_definitions.defs)

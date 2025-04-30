@@ -2,11 +2,11 @@ import dagster as dg
 import requests
 from pipelines.utils.auth import OAuth2
 
-# location_partitions = dg.DynamicPartitionsDefinition(name="locations")
-
 @dg.asset
 def hydrovu_tester():
-    return 5
+    return "hello world"
+
+# location_partitions = dg.DynamicPartitionsDefinition(name="locations")
 
 # @dg.asset
 # def hydrovu_locations():

@@ -25,10 +25,11 @@ services:
   # webserver.
   aquaduct_pipelines:
     build:
-      context: ../
+      context: .
       dockerfile: ./pipelines/Dockerfile
     container_name: aquaduct_pipelines
     image: aquaduct_pipelines_image
+    pull_policy: never
     # expose: 
     #   - '4266'
     restart: always
