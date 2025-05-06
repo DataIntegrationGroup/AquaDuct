@@ -24,7 +24,6 @@ services:
     expose:
       - '1433'
     command: 
-      - /cloud_sql_proxy
       - waterdatainitiative-271000:us-west3:nmwdiproduction
     networks:
       - dagster_network
