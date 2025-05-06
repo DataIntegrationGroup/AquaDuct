@@ -25,7 +25,7 @@ services:
       - '1433'
     command: 
       - /cloud_sql_proxy
-      - -instances=waterdatainitiative-271000:us-west3:nmwdiproduction
+      - --instances=waterdatainitiative-271000:us-west3:nmwdiproduction
     networks:
       - dagster_network
 
