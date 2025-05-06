@@ -26,6 +26,8 @@ services:
     command: 
       - /cloud_sql_proxy
       - -instances=waterdatainitiative-271000:us-west3:nmwdiproduction
+    networks:
+      - dagster_network
 
   # This service runs the gRPC server that loads your user code, in both dagster-webserver
   # and dagster-daemon. By setting DAGSTER_CURRENT_IMAGE to its own image, we tell the
