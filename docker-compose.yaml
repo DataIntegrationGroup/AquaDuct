@@ -91,7 +91,7 @@ services:
       # dagster_dev_postgresql:
       #   condition: service_healthy
       cloud_sql_proxy:
-        condition: service_healthy
+        condition: service_started
       aquaduct_pipelines:
         condition: service_started
 
@@ -123,7 +123,7 @@ services:
       # dagster_dev_postgresql:
       #   condition: service_healthy
       cloud_sql_proxy:
-        condition: service_healthy
+        condition: service_started
       aquaduct_pipelines:
         condition: service_started
 
