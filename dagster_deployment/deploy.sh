@@ -3,12 +3,15 @@ set -euo pipefail
 
 echo "Starting deployment..."
 
-gcloud compute ssh deploy@dagster \
+gcloud compute ssh dagster \
   --ssh-flag="-AT" \
   --command '
-    [ -d AquaDuct ] &&
-    cd AquaDuct &&
-    git pull &&
+    if [ -d AquaDuct ]; then
+      cd AquaDuct && git pull
+    else
+      git clone git@github.com:DataIntegrationGroup/AquaDuct.git &&
+      cd AquaDuct
+    fi
 
     TMP_ENV=$(mktemp)
     cleanup() {
@@ -19,15 +22,15 @@ gcloud compute ssh deploy@dagster \
 
     echo "Fetching secrets..."
     SECRET_JSON=$(gcloud secrets versions access latest --secret=nmwdiproduction_dagster_psql)
-    POSTGRES_USER=$(echo "$SECRET_JSON" | jq -r '.user')
-    POSTGRES_PASSWORD=$(echo "$SECRET_JSON" | jq -r '.password')
+    PG_USER=$(echo "$SECRET_JSON" | jq -r '.user')
+    PG_PASS=$(echo "$SECRET_JSON" | jq -r '.password')
 
-    cat > "$TMP_ENV" <<EOF
-    PG_USER=$PG_USER
-    PG_PASS=$PG_PASS
-    EOF
+    (
+      printf "PG_USER=$PG_USER\n"
+      printf "PG_PASS=$PG_PASS\n"
+    ) > $TMP_ENV
 
-    sudo docker compose down --remove-orphans && 
+    sudo docker compose down --remove-orphans &&
     sudo docker compose --env-file "$TMP_ENV" up --build --force-recreate -d
 
     cleanup
