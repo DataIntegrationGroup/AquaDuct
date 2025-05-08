@@ -4,10 +4,13 @@ telemetry:
 storage:
   postgres:
     postgres_db:
-      username: postgres_user
-      password: postgres_password
-      hostname: dagster_dev_postgresql
-      db_name: postgres_db
+      username: 
+        env: DAGSTER_POSTGRES_USER
+      password: 
+        env: DAGSTER_POSTGRES_PASSWORD
+      db_name:
+        env: DAGSTER_POSTGRES_DB 
+      hostname: cloud_sql_proxy
       port: 5432
 
 run_coordinator:

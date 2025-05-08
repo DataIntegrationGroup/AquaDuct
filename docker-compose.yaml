@@ -42,13 +42,9 @@ services:
     image: aquaduct_pipelines_image
     pull_policy: never
     restart: always
-    secrets:
-      - DAGSTER_POSTGRES_USER
-      - DAGSTER_POSTGRES_PASSWORD
     environment:
-      # DAGSTER_POSTGRES_USER: 'postgres_user'
-      # DAGSTER_POSTGRES_PASSWORD: 'postgres_password'
-      # DAGSTER_POSTGRES_DB: 'postgres_db'
+      DAGSTER_POSTGRES_USER: ${PG_USER}
+      DAGSTER_POSTGRES_PASSWORD: ${PG_PASSWORD}
       DAGSTER_POSTGRES_DB: 'dagster'
       DAGSTER_CURRENT_IMAGE: 'aquaduct_pipelines_image'
     networks:
@@ -74,13 +70,9 @@ services:
       - '3000'
     ports:
       - '3000:3000'
-    secrets:
-      - DAGSTER_POSTGRES_USER
-      - DAGSTER_POSTGRES_PASSWORD
     environment:
-      # DAGSTER_POSTGRES_USER: 'postgres_user'
-      # DAGSTER_POSTGRES_PASSWORD: 'postgres_password'
-      # DAGSTER_POSTGRES_DB: 'postgres_db'
+      DAGSTER_POSTGRES_USER: ${PG_USER}
+      DAGSTER_POSTGRES_PASSWORD: ${PG_PASSWORD}
       DAGSTER_POSTGRES_DB: 'dagster'
     volumes: # Make docker client accessible so we can terminate containers from the webserver
       - /var/run/docker.sock:/var/run/docker.sock
@@ -88,8 +80,6 @@ services:
     networks:
       - dagster_network
     depends_on:
-      # dagster_dev_postgresql:
-      #   condition: service_healthy
       cloud_sql_proxy:
         condition: service_started
       aquaduct_pipelines:
@@ -106,13 +96,9 @@ services:
       - run
     container_name: dagster_daemon
     restart: on-failure
-    secrets:
-      - DAGSTER_POSTGRES_USER
-      - DAGSTER_POSTGRES_PASSWORD
     environment:
-      # DAGSTER_POSTGRES_USER: 'postgres_user'
-      # DAGSTER_POSTGRES_PASSWORD: 'postgres_password'
-      # DAGSTER_POSTGRES_DB: 'postgres_db'
+      DAGSTER_POSTGRES_USER: ${PG_USER}
+      DAGSTER_POSTGRES_PASSWORD: ${PG_PASSWORD}
       DAGSTER_POSTGRES_DB: 'dagster'
     volumes: # Make docker client accessible so we can launch containers using host docker
       - /var/run/docker.sock:/var/run/docker.sock
@@ -120,8 +106,6 @@ services:
     networks:
       - dagster_network
     depends_on:
-      # dagster_dev_postgresql:
-      #   condition: service_healthy
       cloud_sql_proxy:
         condition: service_started
       aquaduct_pipelines:
@@ -131,9 +115,3 @@ networks:
   dagster_network:
     driver: bridge
     name: dagster_network
-
-secrets:
-  DAGSTER_POSTGRES_USER:
-    environment: PG_USER
-  DAGSTER_POSTGRES_PASSWORD:
-    environment: PG_PASS

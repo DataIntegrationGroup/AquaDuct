@@ -23,11 +23,11 @@ gcloud compute ssh dagster \
     echo "Fetching secrets..."
     SECRET_JSON=$(gcloud secrets versions access latest --secret=nmwdiproduction_dagster_psql)
     PG_USER=$(echo "$SECRET_JSON" | jq -r '.user')
-    PG_PASS=$(echo "$SECRET_JSON" | jq -r '.password')
+    PG_PASSWORD=$(echo "$SECRET_JSON" | jq -r '.password')
 
     (
       printf "PG_USER=$PG_USER\n"
-      printf "PG_PASS=$PG_PASS\n"
+      printf "PG_PASSWORD=$PG_PASSWORD\n"
     ) > $TMP_ENV
 
     sudo docker compose down --remove-orphans &&
