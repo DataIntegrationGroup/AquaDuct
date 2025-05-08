@@ -19,12 +19,9 @@ services:
 
   cloud_sql_proxy:
     image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.15.2
-    # ports: 
-    #   - '5432:5432'
-    # expose:
-    #   - '5432'
     command: 
       - waterdatainitiative-271000:us-west3:nmwdiproduction
+      - --address=0.0.0.0
     networks:
       - dagster_network
 

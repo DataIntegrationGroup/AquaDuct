@@ -19,12 +19,15 @@ gcloud compute instances create dagster \
     --labels=goog-ec-src=vm_add-gcloud \
     --reservation-affinity=any
 
+sleep 5 #Command below doesn't work when run immediately after instance creation
+
 gcloud compute ssh dagster --ssh-flag="-AT" --command='
   sudo apt update &&
   sudo apt install -y git curl unzip build-essential
   curl -fsSL https://get.docker.com -o get-docker.sh
   sudo sh ./get-docker.sh
   rm ./get-docker.sh
+  ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 '
 
 echo "Done creating vm!"
