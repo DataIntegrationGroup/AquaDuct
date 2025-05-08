@@ -6,6 +6,7 @@ echo "Starting deployment..."
 gcloud compute ssh dagster \
   --ssh-flag="-AT" \
   --command '
+    set -euo pipefail
     if [ -d AquaDuct ]; then
       cd AquaDuct && git pull
     else
