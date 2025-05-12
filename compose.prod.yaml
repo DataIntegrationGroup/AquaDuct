@@ -24,8 +24,6 @@ services:
         condition: service_started
       aquaduct_pipelines:
         condition: service_started
-    networks:
-      - dagster_network
 
   dagster_daemon:
     environment:
@@ -37,5 +35,3 @@ services:
         condition: service_started
       aquaduct_pipelines:
         condition: service_started
-    networks:
-      - dagster_network
