@@ -31,8 +31,8 @@ gcloud compute ssh dagster \
       printf "PG_PASSWORD=$PG_PASSWORD\n"
     ) > $TMP_ENV
 
-    sudo docker compose down --remove-orphans &&
-    sudo docker compose -f compose.prod.yaml --env-file "$TMP_ENV" up --build --force-recreate -d
+    sudo docker compose -p dagster down --remove-orphans &&
+    sudo docker compose -p dagster -f compose.prod.yaml --env-file "$TMP_ENV" up --build --force-recreate -d
 
     cleanup
   '
