@@ -32,7 +32,7 @@ gcloud compute ssh dagster \
     ) > $TMP_ENV
 
     sudo docker compose down --remove-orphans &&
-    sudo docker compose --env-file "$TMP_ENV" up --build --force-recreate -d
+    sudo docker compose -f compose.prod.yaml --env-file "$TMP_ENV" up --build --force-recreate -d
 
     cleanup
   '
