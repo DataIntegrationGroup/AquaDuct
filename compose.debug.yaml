@@ -1,0 +1,15 @@
+services:
+  dagster_dev_postgresql:
+    image: postgres:11
+    container_name: dagster_dev_postgresql
+    environment:
+      POSTGRES_USER: 'postgres_user'
+      POSTGRES_PASSWORD: 'postgres_password'
+      POSTGRES_DB: 'postgres_db'
+    networks:
+      - dagster_network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres_user -d postgres_db']
+      interval: 10s
+      timeout: 8s
+      retries: 5

@@ -1,0 +1,42 @@
+services:
+  cloud_sql_proxy:
+    image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.15.2
+    command: 
+      - waterdatainitiative-271000:us-west3:nmwdiproduction
+      - --address=0.0.0.0
+    networks:
+      - dagster_network
+  aquaduct_pipelines:
+    extends:
+      file: compose.common.yaml
+      service:
+        aquaduct_pipelines
+  
+  dagster_webserver:
+    extends:
+      file: compose.common.yaml
+      service:
+        dagster_webserver
+    environment:
+      DAGSTER_POSTGRES_USER: ${PG_USER}
+      DAGSTER_POSTGRES_PASSWORD: ${PG_PASSWORD}
+      DAGSTER_POSTGRES_DB: 'dagster'
+    depends_on:
+      cloud_sql_proxy:
+        condition: service_started
+      aquaduct_pipelines:
+        condition: service_started
+  dagster_daemon:
+    extends:
+      file: compose.common.yaml
+      service:
+        dagster_daemon
+    environment:
+      DAGSTER_POSTGRES_USER: ${PG_USER}
+      DAGSTER_POSTGRES_PASSWORD: ${PG_PASSWORD}
+      DAGSTER_POSTGRES_DB: 'dagster'
+    depends_on:
+      cloud_sql_proxy:
+        condition: service_started
+      aquaduct_pipelines:
+        condition: service_started
