@@ -13,6 +13,8 @@ services:
     image: aquaduct_pipelines_image
     pull_policy: never
     restart: always
+    environment:
+      DAGSTER_CURRENT_IMAGE: 'aquaduct_pipelines_image'
     networks:
       - dagster_network
 

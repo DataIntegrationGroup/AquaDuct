@@ -8,6 +8,12 @@ services:
     networks:
       - dagster_network
 
+  aquaduct_pipelines:
+    environment:
+      DAGSTER_POSTGRES_USER: ${PG_USER}
+      DAGSTER_POSTGRES_PASSWORD: ${PG_PASSWORD}
+      DAGSTER_POSTGRES_DB: 'dagster'
+
   dagster_webserver:
     environment:
       DAGSTER_POSTGRES_USER: ${PG_USER}
