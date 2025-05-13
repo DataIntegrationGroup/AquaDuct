@@ -10,7 +10,8 @@ storage:
         env: DAGSTER_POSTGRES_PASSWORD
       db_name:
         env: DAGSTER_POSTGRES_DB 
-      hostname: cloud_sql_proxy
+      hostname:
+        env: DAGSTER_POSTGRES_HOSTNAME
       port: 5432
 
 run_coordinator:
@@ -25,6 +26,7 @@ run_launcher:
       - DAGSTER_POSTGRES_USER
       - DAGSTER_POSTGRES_PASSWORD
       - DAGSTER_POSTGRES_DB
+      - DAGSTER_POSTGRES_HOSTNAME
     network: dagster_network
     container_kwargs:
       volumes:

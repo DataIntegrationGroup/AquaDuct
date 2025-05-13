@@ -19,6 +19,7 @@ services:
       DAGSTER_POSTGRES_USER: ${PG_USER}
       DAGSTER_POSTGRES_PASSWORD: ${PG_PASSWORD}
       DAGSTER_POSTGRES_DB: 'dagster'
+      DAGSTER_POSTGRES_HOSTNAME: cloud_sql_proxy
     depends_on:
       cloud_sql_proxy:
         condition: service_started
@@ -30,6 +31,7 @@ services:
       DAGSTER_POSTGRES_USER: ${PG_USER}
       DAGSTER_POSTGRES_PASSWORD: ${PG_PASSWORD}
       DAGSTER_POSTGRES_DB: 'dagster'
+      DAGSTER_POSTGRES_HOSTNAME: cloud_sql_proxy
     depends_on:
       cloud_sql_proxy:
         condition: service_started
