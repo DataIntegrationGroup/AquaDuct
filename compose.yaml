@@ -1,4 +1,14 @@
+
 services:
+
+  cloud_sql_proxy:
+    image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.15.2
+    command: 
+      - waterdatainitiative-271000:us-west3:nmwdiproduction
+      - --address=0.0.0.0
+    networks:
+      - dagster_network
+
   # This service runs the gRPC server that loads your user code, in both dagster-webserver
   # and dagster-daemon. By setting DAGSTER_CURRENT_IMAGE to its own image, we tell the
   # run launcher to use this same image when launching runs in a new container as well.
@@ -13,10 +23,13 @@ services:
     image: aquaduct_pipelines_image
     pull_policy: never
     restart: always
-    environment:
-      DAGSTER_CURRENT_IMAGE: 'aquaduct_pipelines_image'
     networks:
       - dagster_network
+    environment:
+      DAGSTER_CURRENT_IMAGE: 'aquaduct_pipelines_image'
+      DAGSTER_POSTGRES_USER: ${PG_USER}
+      DAGSTER_POSTGRES_PASSWORD: ${PG_PASSWORD}
+      DAGSTER_POSTGRES_DB: 'dagster'
 
 
   # This service runs dagster-webserver, which loads your user code from the user code container.
@@ -44,6 +57,17 @@ services:
       - /tmp/io_manager_storage:/tmp/io_manager_storage
     networks:
       - dagster_network
+    environment:
+      DAGSTER_POSTGRES_USER: ${PG_USER}
+      DAGSTER_POSTGRES_PASSWORD: ${PG_PASSWORD}
+      DAGSTER_POSTGRES_DB: 'dagster'
+      DAGSTER_POSTGRES_HOSTNAME: cloud_sql_proxy
+    depends_on:
+      cloud_sql_proxy:
+        condition: service_started
+      aquaduct_pipelines:
+        condition: service_started
+
 
   # This service runs the dagster-daemon process, which is responsible for taking runs
   # off of the queue and launching them, as well as creating runs from schedules or sensors.
@@ -61,6 +85,16 @@ services:
       - /tmp/io_manager_storage:/tmp/io_manager_storage
     networks:
       - dagster_network
+    environment:
+      DAGSTER_POSTGRES_USER: ${PG_USER}
+      DAGSTER_POSTGRES_PASSWORD: ${PG_PASSWORD}
+      DAGSTER_POSTGRES_DB: 'dagster'
+      DAGSTER_POSTGRES_HOSTNAME: cloud_sql_proxy
+    depends_on:
+      cloud_sql_proxy:
+        condition: service_started
+      aquaduct_pipelines:
+        condition: service_started
 
 networks:
   dagster_network:
