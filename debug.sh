@@ -11,5 +11,3 @@ cleanup() {
 trap cleanup EXIT
 
 dagster dev -m pipelines.definitions
-
-cleanup

@@ -33,8 +33,6 @@ gcloud compute ssh dagster \
 
     sudo docker compose -p dagster down --remove-orphans &&
     sudo docker compose -p dagster --env-file "$TMP_ENV" up --build --force-recreate -d
-
-    cleanup
   '
 
 echo "Done deploying!"
