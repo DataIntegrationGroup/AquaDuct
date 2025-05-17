@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "dagster>=1.10.12",
     "dagster-docker>=0.26.12",
+    "dagster-gcp>=0.26.12",
     "dagster-postgres>=0.26.12",
     "dagster-webserver>=1.10.12",
     "frost-sta-client>=1.1.48",

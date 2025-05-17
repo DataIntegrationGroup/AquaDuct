@@ -1,7 +1,9 @@
 import dagster as dg
+from dagster_gcp.gcs import GCSPickleIOManager, GCSResource
 import requests
 import json
 import frost_sta_client as fsc
+from pipelines.utils.secrets import DEFAULT_GCP_PROJECT_NUM
 from pipelines.utils.auth import OAuth2, is_token_expired
 
 HYDROVU_PVACD_URL = "https://www.hydrovu.com/public-api/v1/locations/"
@@ -47,7 +49,6 @@ def hydrovu_locations(context):
   url = HYDROVU_PVACD_URL + "list"
   frost_url = FROST_URL
   frost_service = fsc.SensorThingsService(frost_url)
-
   for response in fetch_paginated(url):
     partitions = []
     for loc in response.json():
@@ -60,18 +61,23 @@ def hydrovu_locations(context):
     context.instance.add_dynamic_partitions(location_partitions.name, partitions)
     # context.instance.delete_dynamic_partitions(...)
 
+gcs_pickle_io_manager = GCSPickleIOManager(
+  gcs=GCSResource(project=str(DEFAULT_GCP_PROJECT_NUM)),
+  gcs_bucket="dagster-test-bucket",
+  gcs_prefix="dagster-test"
+)
+
 @dg.asset(
     deps=[ hydrovu_locations ],
+    io_manager_def=gcs_pickle_io_manager,
     partitions_def=location_partitions
 )
 def hydrovu_measurements_fetch(context):
   url = HYDROVU_PVACD_URL + f"{context.partition_key}/data"
-  def process(response):
-    context.pdb.set_trace()
-  fetch_paginated(url, process)
   # for i, response in enumerate(fetch_paginated(url)):
   #   context.log.info(f"Fetching hydrovu measurements page {i} for location {context.partition_key}")
   #   context.pdb.set_trace()
+  return {"url": url}
   
 
 @dg.asset(
