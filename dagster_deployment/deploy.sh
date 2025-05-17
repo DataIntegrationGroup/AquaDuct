@@ -11,9 +11,9 @@ gcloud compute ssh dagster \
       cd AquaDuct && git pull
     else
       git clone git@github.com:DataIntegrationGroup/AquaDuct.git &&
-      git checkout main &&
       cd AquaDuct
     fi
+    git checkout main
 
     TMP_ENV=$(mktemp)
     cleanup() {
@@ -38,6 +38,6 @@ gcloud compute ssh dagster \
     sudo docker compose -p frost-dev -f frost-compose.dev.yaml up -d #NOTE: this frost server is for development/testing.
     sudo docker compose -p dagster down --remove-orphans
     sudo docker compose -p dagster --env-file "$TMP_ENV" up --build --force-recreate -d
-  '
 
-echo "Done deploying!"
+    echo "Done deploying!"
+  '
