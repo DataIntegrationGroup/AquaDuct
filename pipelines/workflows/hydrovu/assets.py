@@ -3,7 +3,7 @@ from dagster_gcp.gcs import GCSPickleIOManager, GCSResource
 import requests
 import json
 import frost_sta_client as fsc
-from pipelines.utils.secrets import DEFAULT_GCP_PROJECT_NUM
+from pipelines.utils.secrets import GCP_PROJECT_NUM
 from pipelines.utils.auth import OAuth2, is_token_expired
 
 HYDROVU_PVACD_URL = "https://www.hydrovu.com/public-api/v1/locations/"
@@ -62,7 +62,7 @@ def hydrovu_locations(context):
     # context.instance.delete_dynamic_partitions(...)
 
 gcs_pickle_io_manager = GCSPickleIOManager(
-  gcs=GCSResource(project=str(DEFAULT_GCP_PROJECT_NUM)),
+  gcs=GCSResource(project=str(GCP_PROJECT_NUM)),
   gcs_bucket="dagster-test-bucket",
   gcs_prefix="dagster-test"
 )
