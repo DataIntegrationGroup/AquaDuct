@@ -34,8 +34,8 @@ gcloud compute ssh dagster \
       printf "PG_PASSWORD=$PG_PASSWORD\n"
     ) > $TMP_ENV
 
-    sudo docker compose -p frost-dev down
-    sudo docker compose -p frost-dev -f frost-compose.dev.yaml up -d #NOTE: this frost server is for development/testing.
+    sudo docker compose -p frost-dev down --remove-orphans
+    sudo docker compose -p frost-dev -f frost-compose.dev.yaml up --build --force-recreate -d
     sudo docker compose -p dagster down --remove-orphans
     sudo docker compose -p dagster --env-file "$TMP_ENV" up --build --force-recreate -d
 

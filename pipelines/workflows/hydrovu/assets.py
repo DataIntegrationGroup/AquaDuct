@@ -8,11 +8,10 @@ from pipelines.utils.auth import OAuth2, is_token_expired
 
 HYDROVU_PVACD_URL = "https://www.hydrovu.com/public-api/v1/locations/"
 HYDROVU_OAUTH_URL = 'https://hydrovu.com/public-api/oauth/token'
-FROST_URL = "http://localhost:8080/FROST-Server/v1.1"
+FROST_URL = "http://localhost:8080/FROST-Server/v1.1" #TODO: move to a sensor things util.
 
-location_partitions = dg.DynamicPartitionsDefinition(name="hydrovu_locations")
 
-def fetch_paginated(url, handle_page=None):
+def fetch_paginated(url, handle_page=None): #TODO: move to utils if useful.
   auth = OAuth2(token_url=HYDROVU_OAUTH_URL, secret_name='hydrovu_pvacd')
   headers={}
   next_page = 'first page'
@@ -44,22 +43,19 @@ def convert_location_hydrovu_to_sensorthings(loc):
     encoding_type="application/geo+json")
 
 
+location_partitions = dg.DynamicPartitionsDefinition(name="hydrovu_locations")
+
 @dg.asset()
 def hydrovu_locations(context):
-  url = HYDROVU_PVACD_URL + "list"
-  frost_url = FROST_URL
-  frost_service = fsc.SensorThingsService(frost_url)
-  for response in fetch_paginated(url):
-    partitions = []
+  frost_service = fsc.SensorThingsService(FROST_URL)
+  partitions = []
+  for response in fetch_paginated(HYDROVU_PVACD_URL + "list"):
     for loc in response.json():
       context.log.info(f"Writing location to FROST: { loc }")
-      # TODO: how to upsert? this creates duplicates when re-run.
-      frost_service.create(convert_location_hydrovu_to_sensorthings(loc))
+      frost_service.create(convert_location_hydrovu_to_sensorthings(loc)) # TODO: make this an INSERT IF NOT EXISTS.
       partitions.append(str(loc['id']))
-    # TODO: delete old ones?
-    context.log.info("Creating new partitions.")
-    context.instance.add_dynamic_partitions(location_partitions.name, partitions)
-    # context.instance.delete_dynamic_partitions(...)
+  context.log.info("Creating new partitions.")
+  context.instance.add_dynamic_partitions(location_partitions.name, partitions) #TODO: check the logic here (e.g. does it make duplicates, how do we disable partitions that no longer exist in api, etc.).
 
 gcs_pickle_io_manager = GCSPickleIOManager(
   gcs=GCSResource(project=str(GCP_PROJECT_NUM)),
@@ -78,7 +74,7 @@ def hydrovu_measurements_fetch(context):
   #   context.log.info(f"Fetching hydrovu measurements page {i} for location {context.partition_key}")
   #   context.pdb.set_trace()
   return {"url": url}
-  
+
 
 @dg.asset(
     deps=[ hydrovu_measurements_fetch ],
