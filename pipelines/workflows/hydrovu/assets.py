@@ -66,7 +66,7 @@ def hydrovu_locations(context):
 
 gcs_pickle_io_manager = GCSPickleIOManager(
   gcs=GCSResource(project=str(GCP_PROJECT_NUM)),
-  gcs_bucket="dagster-test-bucket",
+  gcs_bucket="dagster-test-bucket_aquaduct", #TODO: move to env var or config
   gcs_prefix="dagster-test"
 )
 
