@@ -51,8 +51,15 @@ def hydrovu_locations(context):
   partitions = []
   for response in fetch_paginated(HYDROVU_PVACD_URL + "list"):
     for loc in response.json():
-      context.log.info(f"Writing location to FROST: { loc }")
-      frost_service.create(convert_location_hydrovu_to_sensorthings(loc)) # TODO: make this an INSERT IF NOT EXISTS.
+      context.log.info(f"Checking location {loc['name']} with id {loc['id']}")
+      # Check if the location already exists in FROST
+      existing = frost_service.locations().query().filter(f"name eq '{loc['name']}'").list()
+      context.log.info(f"Found {len(existing.entities)} existing locations with name {loc['name']}")
+      if len(existing.entities) == 0:
+        new_location = convert_location_hydrovu_to_sensorthings(loc)
+        context.log.info(f"Creating new location: {new_location.name}")
+        context.log.info(f"Writing location to FROST: { new_location }")
+        frost_service.create(new_location)
       partitions.append(str(loc['id']))
   context.log.info("Creating new partitions.")
   context.instance.add_dynamic_partitions(location_partitions.name, partitions) #TODO: check the logic here (e.g. does it make duplicates, how do we disable partitions that no longer exist in api, etc.).

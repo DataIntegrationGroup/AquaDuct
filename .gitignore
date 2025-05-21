@@ -5,3 +5,6 @@
 __pycache__/
 .aider*
 .tmp*
+launch.json
+connect_devdb.sh
+debug_in_process.yaml
