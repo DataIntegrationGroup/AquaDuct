@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, Mock
+from unittest.mock import Mock
 from dagster import build_op_context
 from ..assets import get_csv_from_gcs
 
@@ -12,21 +12,20 @@ def test_get_csv_from_gcs():
     # Create mock bucket
     mock_bucket = Mock()
     mock_bucket.list_blobs.return_value = [mock_blob]
+    mock_bucket.name = "roswellbubbler_dev"
 
-    # Create mock client
+    # Create mock GCS client
     mock_client = Mock()
     mock_client.bucket.return_value = mock_bucket
 
     # Create mock GCS resource
     mock_gcs = Mock()
     mock_gcs.get_client.return_value = mock_client
-    mock_gcs.gcs_bucket = "test-bucket"
-    mock_gcs.gcs_prefix = "test-prefix"
 
     # Build context with mock resource
-    context = build_op_context(resources={"gcs_roswell": mock_gcs})
+    context = build_op_context(resources={"gcs": mock_gcs})
 
-    # Run the asset
+    # Run the asset (only pass context)
     result = get_csv_from_gcs(context)
 
     # Assertions
@@ -36,6 +35,7 @@ def test_get_csv_from_gcs():
     assert result[0]["updated"] == "2025-05-21"
 
     # Verify mock calls
-    mock_client.bucket.assert_called_once_with("test-bucket")
-    mock_bucket.list_blobs.assert_called_once_with(prefix="test-prefix")
+    mock_gcs.get_client.assert_called_once()
+    mock_client.bucket.assert_called_once_with("roswellbubbler_dev")
+    mock_bucket.list_blobs.assert_called_once_with(prefix="observations")
     mock_blob.download_as_text.assert_called_once()

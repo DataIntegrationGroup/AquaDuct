@@ -1,34 +1,26 @@
 import dagster as dg
-import frost_sta_client as fsc
+from dagster_gcp.gcs import GCSResource
 
-
-FROST_URL = "http://localhost:8080/FROST-Server/v1.1" #TODO: move to a sensor things util.
-
-# Get csv file from GCS bucket
-@dg.asset(
-    required_resource_keys={"gcs_roswell"},
-)
-def get_csv_from_gcs(context):
-    # Get the GCS bucket and prefix from the context
-    gcs = context.resources.gcs_roswell
+# ------------------------------------------------------------------------------
+# Asset: get_csv_from_gcs
+# ------------------------------------------------------------------------------
+@dg.asset
+def get_csv_from_gcs(
+    context: dg.AssetExecutionContext,
+    gcs: GCSResource):
     client = gcs.get_client()
 
-    # Get the bucket and prefix from the GCS resource
-    bucket = client.bucket(gcs.gcs_bucket)
-    prefix = gcs.gcs_prefix
-    context.log.info(f"Fetching CSV files from bucket {bucket} with prefix {prefix}")
+    bucket = client.bucket("roswellbubbler_dev") 
+    prefix = "observations"
 
-    blobs = bucket.list_blobs(prefix=gcs.gcs_prefix)
-    context.log.info(f"Found {len(list(blobs))} blobs in bucket {gcs.gcs_bucket}")
-    
-    all_data = []
-    for blob in blobs:
-        context.log.info(f"Processing blob: {blob.name}")
-        content = blob.download_as_text()
-        all_data.append({
+    blobs = list(bucket.list_blobs(prefix=prefix))
+    context.log.info("Found %d blobs in gs://%s/%s", len(blobs), bucket.name, prefix)
+
+    return [
+        {
             "name": blob.name,
-            "content": content,
-            "updated": blob.updated
-        })
-
-    return all_data
+            "content": blob.download_as_text(), 
+            "updated": blob.updated,
+        }
+        for blob in blobs
+    ]
