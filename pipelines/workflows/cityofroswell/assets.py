@@ -1,6 +1,5 @@
 import dagster as dg
 import frost_sta_client as fsc
-from pipelines.utils.secrets import GCP_PROJECT_NUM
 
 FROST_URL = "http://localhost:8080/FROST-Server/v1.1" #TODO: move to a sensor things util.
 
@@ -14,11 +13,11 @@ def get_csv_from_gcs(context):
     client = gcs.get_client()
 
     # Get the bucket and prefix from the GCS resource
-    bucket = client.bucket(gcs.bucket)
-    prefix = gcs.prefix
+    bucket = client.bucket(gcs.gcs_bucket)
+    prefix = gcs.gcs_prefix
     context.log.info(f"Fetching CSV files from bucket {bucket} with prefix {prefix}")
 
-    blobs = bucket.list_blobs(prefix=gcs.prefix)
+    blobs = bucket.list_blobs(prefix=gcs.gcs_prefix)
     context.log.info(f"Found {len(list(blobs))} blobs in bucket {gcs.gcs_bucket}")
     
     all_data = []

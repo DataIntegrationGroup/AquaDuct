@@ -8,8 +8,8 @@ defs = Definitions(
   resources={
       "gcs": GCSResource(
           project=str(GCP_PROJECT_NUM),
-          bucket="roswellbubbler_dev",
-          prefix="observations"
+          gcs_bucket="roswellbubbler_dev",
+          gcs_prefix="observations"
       ),
   },
 )
