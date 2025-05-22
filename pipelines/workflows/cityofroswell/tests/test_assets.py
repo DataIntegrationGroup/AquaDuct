@@ -24,7 +24,7 @@ def test_get_csv_from_gcs():
     mock_gcs.gcs_prefix = "test-prefix"
 
     # Build context with mock resource
-    context = build_op_context(resources={"gcs": mock_gcs})
+    context = build_op_context(resources={"gcs_roswell": mock_gcs})
 
     # Run the asset
     result = get_csv_from_gcs(context)

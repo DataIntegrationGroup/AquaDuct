@@ -1,15 +1,16 @@
 import dagster as dg
 import frost_sta_client as fsc
 
+
 FROST_URL = "http://localhost:8080/FROST-Server/v1.1" #TODO: move to a sensor things util.
 
 # Get csv file from GCS bucket
 @dg.asset(
-    required_resource_keys={"gcs"},
+    required_resource_keys={"gcs_roswell"},
 )
 def get_csv_from_gcs(context):
     # Get the GCS bucket and prefix from the context
-    gcs = context.resources.gcs
+    gcs = context.resources.gcs_roswell
     client = gcs.get_client()
 
     # Get the bucket and prefix from the GCS resource
