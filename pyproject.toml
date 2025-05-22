@@ -13,5 +13,6 @@ dependencies = [
     "frost-sta-client>=1.1.48",
     "google-cloud-secret-manager>=2.23.3",
     "oauthlib>=3.2.2",
+    "pytest>=8.3.5",
     "requests-oauthlib>=2.0.0",
 ]
