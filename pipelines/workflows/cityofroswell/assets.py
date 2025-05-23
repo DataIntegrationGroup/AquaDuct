@@ -4,6 +4,14 @@ from dagster_gcp.gcs import GCSResource
 # ------------------------------------------------------------------------------
 # Asset: get_csv_from_gcs
 # ------------------------------------------------------------------------------
+
+# TODO: 5/23/2025 - Add parition file to create partitions after csv load
+# TODO: 5/23/2025 - Setup a shared reources file for GCS assets (or single asset?)
+# TODO: 5/23/2025 - Implement FROST API to load parition into SensorThings
+# TODO: 5/23/2025 - Implement dagster sensor to watch for new files
+# TODO: 5/23/2025 - Update definitions at the workflow level to include all resouces and sensors
+# TODO: 5/23/2025 - Move any reusable code to utils
+
 @dg.asset
 def get_csv_from_gcs(
     context: dg.AssetExecutionContext,
