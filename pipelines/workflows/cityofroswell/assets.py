@@ -12,23 +12,34 @@ from .partitions import file_partitions
 # TODO: 5/23/2025 - Update definitions at the workflow level to include all resouces and sensors
 # TODO: 5/23/2025 - Move any reusable code to utils
 
-@dg.asset
+@dg.asset(partitions_def=file_partitions)
 def get_csv_from_gcs(
-    context: dg.AssetExecutionContext,
-    gcs: GCSResource):
-    client = gcs.get_client()
+    context,
+    gcs_roswell: GCSResource
+    ):
+    
+    client = gcs_roswell.get_client()
 
     bucket = client.bucket("roswellbubbler_dev") 
-    prefix = "observations"
 
-    blobs = list(bucket.list_blobs(prefix=prefix))
-    context.log.info("Found %d blobs in gs://%s/%s", len(blobs), bucket.name, prefix)
+    blob = bucket.blob(context.partition_key)
 
-    return [
-        {
-            "name": blob.name,
-            "content": blob.download_as_text(), 
-            "updated": blob.updated,
-        }
-        for blob in blobs
-    ]
+    context.log.info("Fetching blobs from gs://%s/", bucket.name)
+    context.log.info("Found blob: %s", blob.name)
+
+    content = blob.download_as_text()
+    context.add_output_metadata({"gcs_generation": blob.generation})
+
+    return content
+
+# ------------------------------------------------------------------------------
+
+@dg.asset(partitions_def=file_partitions, deps=[get_csv_from_gcs])
+def load_csv_to_sensorthings(
+    context,
+    get_csv_from_gcs,
+    frost: SensorThingsResource
+):
+    st_client = frost.get_client()
+    context.log.info("Loading CSV content to SensorThings")
+

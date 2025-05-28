@@ -8,3 +8,4 @@ __pycache__/
 launch.json
 connect_devdb.sh
 debug_in_process.yaml
+.dagster_debug_instance
