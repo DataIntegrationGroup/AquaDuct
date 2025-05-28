@@ -12,6 +12,6 @@ shared_resources_def = Definitions(
 )
 
 defs = Definitions.merge(
-    cityofroswell_definitions.defs,
     shared_resources_def,
+    cityofroswell_definitions.defs,
     )
