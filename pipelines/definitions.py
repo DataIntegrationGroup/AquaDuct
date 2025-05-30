@@ -1,4 +1,13 @@
 from dagster import Definitions
 import pipelines.workflows.hydrovu.definitions as hydrovu_definitions
+import pipelines.workflows.cityofroswell.definitions as cityofroswell_definitions
+from pipelines.utils.resources import SensorThingsResource
 
-defs = Definitions.merge(hydrovu_definitions.defs)
+frost_resource = SensorThingsResource(
+    frost_url="http://localhost:8080/FROST-Server/v1.1"
+)
+
+defs = Definitions.merge(
+    Definitions(resources={"frost": frost_resource}),
+    cityofroswell_definitions.defs,
+    )

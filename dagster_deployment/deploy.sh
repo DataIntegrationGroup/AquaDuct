@@ -13,11 +13,14 @@ gcloud compute ssh dagster \
       git clone git@github.com:DataIntegrationGroup/AquaDuct.git &&
       cd AquaDuct
     fi
+    git checkout main
 
     TMP_ENV=$(mktemp)
     cleanup() {
       echo "Cleaning up..."
       rm -f "$TMP_ENV"
+      sudo docker compose -p dagster down --remove-orphans
+      sudo docker compose -p frost-dev down --remove-orphans
     }
     trap cleanup EXIT
 
@@ -31,8 +34,10 @@ gcloud compute ssh dagster \
       printf "PG_PASSWORD=$PG_PASSWORD\n"
     ) > $TMP_ENV
 
-    sudo docker compose -p dagster down --remove-orphans &&
+    sudo docker compose -p frost-dev down --remove-orphans
+    sudo docker compose -p frost-dev -f frost-compose.dev.yaml up --build --force-recreate -d
+    sudo docker compose -p dagster down --remove-orphans
     sudo docker compose -p dagster --env-file "$TMP_ENV" up --build --force-recreate -d
-  '
 
-echo "Done deploying!"
+    echo "Done deploying!"
+  '
